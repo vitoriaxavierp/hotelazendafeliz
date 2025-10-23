@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Quartos</title>
+</head>
+<body>
+    <h1>Lista de Quartos</h1>
+    <a href="{{ url_for('main.novo_quarto') }}">Novo Quarto</a>
+    <table border="1" cellpadding="5">
+        <tr>
+            <th>Número</th>
+            <th>Tipo</th>
+            <th>Status</th>
+            <th>Localização</th>
+            <th>Ações</th>
+        </tr>
+        {% for q in quartos %}
+        <tr>
+            <td>{{ q.numero_quarto }}</td>
+            <td>{{ q.tipo.nome_tipo }}</td>
+            <td>{{ q.status_limpeza }}</td>
+            <td>{{ q.localizacao }}</td>
+            <td>
+                <a href="{{ url_for('main.editar_quarto', numero=q.numero_quarto) }}">Editar</a> |
+                <a href="{{ url_for('main.excluir_quarto', numero=q.numero_quarto) }}" onclick="return confirm('Excluir quarto?')">Excluir</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+    <a href="{{ url_for('main.index') }}">Voltar</a>
+</body>
+</html>

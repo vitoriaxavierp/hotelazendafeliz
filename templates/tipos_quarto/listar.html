@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Tipos de Quarto</title>
+</head>
+<body>
+    <h1>Tipos de Quarto</h1>
+    <a href="{{ url_for('main.novo_tipo_quarto') }}">Novo Tipo</a>
+    <table border="1" cellpadding="5">
+        <tr>
+            <th>ID</th>
+            <th>Nome</th>
+            <th>Capacidade</th>
+            <th>Preço Base</th>
+            <th>Descrição</th>
+            <th>Ações</th>
+        </tr>
+        {% for t in tipos %}
+        <tr>
+            <td>{{ t.id_tipo }}</td>
+            <td>{{ t.nome_tipo }}</td>
+            <td>{{ t.capacidade_maxima }}</td>
+            <td>R$ {{ t.preco_diaria_base }}</td>
+            <td>{{ t.descricao }}</td>
+            <td>
+                <a href="{{ url_for('main.editar_tipo_quarto', id=t.id_tipo) }}">Editar</a> |
+                <a href="{{ url_for('main.excluir_tipo_quarto', id=t.id_tipo) }}" onclick="return confirm('Excluir tipo?')">Excluir</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+    <a href="{{ url_for('main.index') }}">Voltar</a>
+</body>
+</html>

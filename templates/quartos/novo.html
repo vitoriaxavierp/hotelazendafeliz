@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head><meta charset="UTF-8"><title>Novo Quarto</title></head>
+<body>
+    <h1>Novo Quarto</h1>
+    <form method="POST">
+        <label>Número do Quarto:</label><br>
+        <input type="text" name="numero" required><br><br>
+
+        <label>Tipo:</label><br>
+        <select name="tipo" required>
+            {% for t in tipos %}
+                <option value="{{ t.id_tipo }}">{{ t.nome_tipo }}</option>
+            {% endfor %}
+        </select><br><br>
+
+        <label>Status de Limpeza:</label><br>
+        <select name="status">
+            <option>Sujo</option>
+            <option>Limpando</option>
+            <option>Limpo</option>
+        </select><br><br>
+
+        <label>Localização:</label><br>
+        <input type="text" name="localizacao"><br><br>
+
+        <button type="submit">Salvar</button>
+    </form>
+    <a href="{{ url_for('main.listar_quartos') }}">Voltar</a>
+</body>
+</html>
