@@ -1,5 +1,6 @@
-from flask import Blueprint, render_template, request, redirect, url_for
+from flask import Blueprint, render_template, request, redirect, url_for, flash
 from models.models import db, Usuario, Perfil, TipoQuarto, Quarto
+from flask_login import login_user, logout_user, current_user, login_required
 
 main = Blueprint('main', __name__)
 
@@ -12,11 +13,13 @@ def index():
 # -----------------------------
 
 @main.route('/usuarios')
+@login_required
 def listar_usuarios():
     usuarios = Usuario.query.all()
     return render_template('usuarios/listar.html', usuarios=usuarios)
 
 @main.route('/usuarios/novo', methods=['GET', 'POST'])
+@login_required
 def novo_usuario():
     perfis = Perfil.query.all()
 
@@ -34,6 +37,7 @@ def novo_usuario():
     return render_template('usuarios/novo.html', perfis=perfis)
 
 @main.route('/usuarios/editar/<int:id>', methods=['GET', 'POST'])
+@login_required
 def editar_usuario(id):
     usuario = Usuario.query.get_or_404(id)
     perfis = Perfil.query.all()
@@ -49,7 +53,11 @@ def editar_usuario(id):
     return render_template('usuarios/editar.html', usuario=usuario, perfis=perfis)
 
 @main.route('/usuarios/excluir/<int:id>')
+@login_required
 def excluir_usuario(id):
+    if current_user.perfil.nome_perfil != 'Administrador':
+        flash('Apenas administradores podem excluir usuários.', 'warning')
+        return redirect(url_for('main.listar_usuarios'))
     usuario = Usuario.query.get_or_404(id)
     db.session.delete(usuario)
     db.session.commit()
@@ -61,11 +69,13 @@ def excluir_usuario(id):
 # -------------------------------------
 
 @main.route('/tipos_quarto')
+@login_required
 def listar_tipos_quarto():
     tipos = TipoQuarto.query.all()
     return render_template('tipos_quarto/listar.html', tipos=tipos)
 
 @main.route('/tipos_quarto/novo', methods=['GET', 'POST'])
+@login_required
 def novo_tipo_quarto():
     if request.method == 'POST':
         nome = request.form['nome']
@@ -81,6 +91,7 @@ def novo_tipo_quarto():
     return render_template('tipos_quarto/novo.html')
 
 @main.route('/tipos_quarto/editar/<int:id>', methods=['GET', 'POST'])
+@login_required
 def editar_tipo_quarto(id):
     tipo = TipoQuarto.query.get_or_404(id)
     if request.method == 'POST':
@@ -93,6 +104,7 @@ def editar_tipo_quarto(id):
     return render_template('tipos_quarto/editar.html', tipo=tipo)
 
 @main.route('/tipos_quarto/excluir/<int:id>')
+@login_required
 def excluir_tipo_quarto(id):
     tipo = TipoQuarto.query.get_or_404(id)
     db.session.delete(tipo)
@@ -105,11 +117,13 @@ def excluir_tipo_quarto(id):
 # -------------------------------------
 
 @main.route('/quartos')
+@login_required
 def listar_quartos():
     quartos = Quarto.query.all()
     return render_template('quartos/listar.html', quartos=quartos)
 
 @main.route('/quartos/novo', methods=['GET', 'POST'])
+@login_required
 def novo_quarto():
     tipos = TipoQuarto.query.all()
     if request.method == 'POST':
@@ -126,6 +140,7 @@ def novo_quarto():
     return render_template('quartos/novo.html', tipos=tipos)
 
 @main.route('/quartos/editar/<string:numero>', methods=['GET', 'POST'])
+@login_required
 def editar_quarto(numero):
     quarto = Quarto.query.get_or_404(numero)
     tipos = TipoQuarto.query.all()
@@ -140,8 +155,38 @@ def editar_quarto(numero):
     return render_template('quartos/editar.html', quarto=quarto, tipos=tipos)
 
 @main.route('/quartos/excluir/<string:numero>')
+@login_required
 def excluir_quarto(numero):
     quarto = Quarto.query.get_or_404(numero)
     db.session.delete(quarto)
     db.session.commit()
     return redirect(url_for('main.listar_quartos'))
+
+# -------------------------------------
+# LOGIN E LOGOUT
+# -------------------------------------
+
+@main.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        email = request.form['email']
+        senha = request.form['senha']
+
+        usuario = Usuario.query.filter_by(email=email, senha_hash=senha).first()
+
+        if usuario:
+            login_user(usuario)
+            flash('Login realizado com sucesso!', 'success')
+            return redirect(url_for('main.index'))
+        else:
+            flash('Usuário ou senha incorretos.', 'danger')
+    
+    return render_template('login.html')
+
+
+@main.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    flash('Logout realizado.', 'info')
+    return redirect(url_for('main.login'))

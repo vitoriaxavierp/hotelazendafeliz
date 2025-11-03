@@ -1,6 +1,18 @@
 from flask_sqlalchemy import SQLAlchemy
+from flask_login import UserMixin
 
 db = SQLAlchemy()
+
+class Usuario(UserMixin, db.Model):
+    __tablename__ = 'usuarios'
+    id = db.Column(db.Integer, primary_key=True)
+    nome_completo = db.Column(db.String(150), nullable=False)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+    senha_hash = db.Column(db.String(200), nullable=False)
+    perfil_id = db.Column(db.Integer, db.ForeignKey('perfis.id'), nullable=False)
+
+    def get_id(self):
+        return str(self.id)
 
 # ---------------------------
 # TABELAS DO PROJETO
@@ -12,15 +24,6 @@ class Perfil(db.Model):
     nome_perfil = db.Column(db.String(50), unique=True, nullable=False)
 
     usuarios = db.relationship('Usuario', backref='perfil', lazy=True)
-
-class Usuario(db.Model):
-    __tablename__ = 'usuarios'
-    id = db.Column(db.Integer, primary_key=True)
-    nome_completo = db.Column(db.String(150), nullable=False)
-    email = db.Column(db.String(120), unique=True, nullable=False)
-    senha_hash = db.Column(db.String(200), nullable=False)
-    perfil_id = db.Column(db.Integer, db.ForeignKey('perfis.id'), nullable=False)
-
 
 class TipoQuarto(db.Model):
     __tablename__ = 'tipos_quarto'
