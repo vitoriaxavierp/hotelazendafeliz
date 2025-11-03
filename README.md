@@ -67,7 +67,7 @@ Projeto acadêmico com foco em desenvolvimento web, banco de dados e autenticaç
 │       ├── listar.html
 │       ├── novo.html
 │       └── editar.html
-└── static/        (se você adicionar futuramente)
+└── static/        
     ├── css/
     ├── js/
     └── img/```
@@ -115,4 +115,5 @@ admin@hotel.com	admin
 
 
 ⭐ Se você gostou deste projeto, considere deixar uma estrela no repositório!
+
 
