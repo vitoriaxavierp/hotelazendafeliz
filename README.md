@@ -1,4 +1,4 @@
-# Hotel Fazenda Feliz — Sistema de Gestão Hoteleira
+# Hotel Fazenda Feliz 🌾
 
 Sistema web para gerenciamento de hotel, desenvolvido em **Python + Flask + SQLite**, com controle de acesso por perfil, cadastro de usuários e gerenciamento de quartos e tipos de quarto.
 
@@ -115,3 +115,4 @@ admin@hotel.com	admin
 
 
 ⭐ Se você gostou deste projeto, considere deixar uma estrela no repositório!
+
